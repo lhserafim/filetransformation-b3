@@ -18,6 +18,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.Arrays;
+import java.util.List;
 
 
 @Slf4j
@@ -45,19 +46,19 @@ public class FileController {
     public String transformFile(@RequestParam("files") MultipartFile[] files, Model model) {
         Arrays.stream(files).forEach(file -> log.info("File name: " + file.getOriginalFilename()));
         model.addAttribute("fileNames", Arrays.stream(files).map(MultipartFile::getOriginalFilename).toArray(String[]::new));
-        String path = fileService.transformFile(files);
-        model.addAttribute("path", path);
+        List<String> paths = fileService.transformFile(files);
+        model.addAttribute("paths", paths);
         return "file-list";
     }
 
     @GetMapping("/download")
     public ResponseEntity<InputStreamResource> downloadFile(@RequestParam("path") String path) {
         try {
-            File file = new File(path );
+            File file = new File(path);
             FileInputStream inputStream = new FileInputStream(file);
 
             HttpHeaders headers = new HttpHeaders();
-            headers.add("Content-Disposition", "attachment; filename=xxxx.txt" ); // TODO usar o filename original
+            headers.add("Content-Disposition", "attachment; filename=" + file.getName() );
 
             return ResponseEntity
                     .ok()

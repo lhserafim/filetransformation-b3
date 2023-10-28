@@ -4,12 +4,18 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.*;
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.OutputStream;
+import java.io.OutputStreamWriter;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.StandardCopyOption;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 
@@ -17,27 +23,25 @@ import java.util.Objects;
 @Service
 public class FileService {
 
-    public String transformFile(MultipartFile[] files) {
-        String destinationFileName = null;
-        List<MultipartFile> sinistroFiles = new ArrayList<>();
+    public List<String> transformFile(MultipartFile[] files) {
+        List<String> paths = new ArrayList<>();
 
         for (MultipartFile file : files) {
             log.info("File name: " + file.getOriginalFilename());
             String fileName = file.getOriginalFilename();
             if (fileName != null && fileName.toLowerCase().contains("sinistro")) {
-                sinistroFiles.add(file);
-                destinationFileName = createModifiedFile(file, "claim", 2);
-            } // TODO adicionar tratamento para AUTOMÓVEL
-            // TODO preparar para lista de arquivos
+                paths.add(createModifiedFile(file, "claim", 4));
+            } else if (fileName != null) {
+                paths.add(createModifiedFile(file, null, 2));
+            }
         }
-        return destinationFileName;
+        return paths;
     }
 
     public String createModifiedFile(MultipartFile file, String tipo, int position) {
         try {
             InputStream inputStream = file.getInputStream();
 
-            // Crie um diretório temporário em tempo de execução
             Path tempDir = Files.createTempDirectory("tempDir");
 
             String destinationFileName = tempDir.toString() + File.separator + file.getOriginalFilename();
@@ -74,8 +78,6 @@ public class FileService {
             bufferedReader.close();
             return destinationFileName;
 
-            // Mova o arquivo modificado para o diretório de destino desejado
-//            Files.move(Path.of(destinationFileName), Path.of("caminho_de_destino"), StandardCopyOption.REPLACE_EXISTING);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }

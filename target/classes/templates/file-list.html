@@ -48,9 +48,19 @@
     </li>
 </ul>
 
-<form action="/b3/file/download" method="get">
-    <input type="hidden" name="path" th:value="${path}" />
-    <button type="submit">Download Arquivos</button>
-</form>
+<ul>
+    <li th:each="path : ${paths}">
+        <span th:text="${path}"></span>
+        <form action="/b3/file/download" method="get">
+            <input type="hidden" name="path" th:value="${path}" />
+            <button type="submit">Download Arquivos</button>
+        </form>
+    </li>
+</ul>
+
+<!--<form action="/b3/file/download" method="get">-->
+<!--    <input type="hidden" name="path" th:value="${paths}" />-->
+<!--    <button type="submit">Download Arquivos</button>-->
+<!--</form>-->
 </body>
 </html>

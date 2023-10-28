@@ -1,0 +1,20 @@
+
+`	java:S112K"FDefine and throw a dedicated exception instead of using a generic one.(Ò‚Òéüÿÿÿÿ
+c
+java:S1192$"FDefine a constant instead of duplicating this literal "claim" 3 times.(ÚÒù8¯ß ·1
+f
+java:S2095"DUse try-with-resources or close this "Stream" in a "finally" clause.(æß±Âıÿÿÿÿ8„ß¡·1
+f
+java:S2095!"DUse try-with-resources or close this "Stream" in a "finally" clause.(ÙÁš˜şÿÿÿÿ8„ß¡·1
+^
+java:S1075"ARefactor your code to get this URI from a customizable parameter.(¤ÿØÌ8†ß¡·1
+]
+java:S1075"ARefactor your code to get this URI from a customizable parameter.(õ¦{8‡ß¡·1
+c
+java:S1075"ARefactor your code to get this URI from a customizable parameter.(åïƒ‹ÿÿÿÿÿ8‡ß¡·1
+^
+java:S1075"ARefactor your code to get this URI from a customizable parameter.(°”ş8‡ß¡·1
+G	java:S106"+Replace this use of System.out by a logger.(É±Íé8Ûß ·1
+L	java:S106"+Replace this use of System.out by a logger.(Óãê™ıÿÿÿÿ8İß ·1
+L	java:S106"+Replace this use of System.out by a logger.(ÆÅ´Æşÿÿÿÿ8İß ·1
+L	java:S106&"+Replace this use of System.out by a logger.(Óãê™ıÿÿÿÿ8Şß ·1
