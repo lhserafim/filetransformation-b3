@@ -49,6 +49,7 @@
 </ul>
 
 <form action="/b3/file/download" method="get">
+    <input type="hidden" name="path" th:value="${path}" />
     <button type="submit">Download Arquivos</button>
 </form>
 </body>
