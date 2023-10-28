@@ -2,6 +2,7 @@ package com.suhai.transformab3.controller;
 
 import com.suhai.transformab3.service.FileService;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.tomcat.util.http.fileupload.IOUtils;
 import org.springframework.core.io.InputStreamResource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
@@ -16,9 +17,12 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipOutputStream;
 
 
 @Slf4j
@@ -26,14 +30,11 @@ import java.util.List;
 @RequestMapping(value = "b3/file")
 public class FileController {
 
-    // TODO capturar e transformar os arquivos, com base no seu tipo
     // TODO melhorar a aparência da página
     // TODO colocar autenticação
     // TODO subir na AWS
     // TODO colocar tratamento para exceções
     // TODO refatorar o código
-
-    private static final String UPLOAD_DIR = "/Users/lhserafim/Downloads/B3/source/21403_SEG_230815_SP_MOVIMENTO-DIARIO-AUTOMOVEL-TXT.txt";
 
 
     private final FileService fileService;
@@ -65,6 +66,47 @@ public class FileController {
                     .headers(headers)
                     .contentType(MediaType.APPLICATION_OCTET_STREAM)
                     .body(new InputStreamResource(inputStream));
+        } catch (IOException e) {
+            log.error(e.getMessage());
+            return ResponseEntity.notFound().build();
+        }
+    }
+
+    @GetMapping("/downloads")
+    public ResponseEntity<InputStreamResource> downloadFiles(@RequestParam("paths") String[] paths) {
+        try {
+            // Crie um arquivo ZIP temporário
+            File zipFile = File.createTempFile("arquivos_b3", ".zip");
+            FileOutputStream fos = new FileOutputStream(zipFile);
+            ZipOutputStream zos = new ZipOutputStream(fos);
+
+            // Adicione os arquivos do array de strings ao arquivo ZIP
+            for (String path : paths) {
+                path = path.replace("[", "").replace("]","");
+                File file = new File(path);
+                if (file.exists() && file.isFile()) {
+                    FileInputStream fis = new FileInputStream(file);
+                    ZipEntry zipEntry = new ZipEntry(file.getName());
+                    zos.putNextEntry(zipEntry);
+                    IOUtils.copy(fis, zos);
+                    fis.close();
+                }
+            }
+
+            zos.close();
+
+            // Crie um InputStream a partir do arquivo ZIP
+            FileInputStream zipInputStream = new FileInputStream(zipFile);
+
+            // Configure o cabeçalho de resposta para o download do arquivo ZIP
+            HttpHeaders headers = new HttpHeaders();
+            headers.add("Content-Disposition", "attachment; filename=download.zip");
+
+            return ResponseEntity
+                    .ok()
+                    .headers(headers)
+                    .contentType(MediaType.APPLICATION_OCTET_STREAM)
+                    .body(new InputStreamResource(zipInputStream));
         } catch (IOException e) {
             log.error(e.getMessage());
             return ResponseEntity.notFound().build();
